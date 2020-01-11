@@ -4,7 +4,7 @@ class bulbasaur():
     def __init__(self):
         self.name = "Bulbasaur"
         self.level = 5
-        self.type = "fire"
+        self.type = "grass"
         self.max_health = 45
         self.current_health = 45
         self.attack = 49
