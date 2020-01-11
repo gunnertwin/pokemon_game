@@ -1,6 +1,7 @@
 import os
 import random
 from pokemon_db import *
+from moves import *
 
 #=============================================================================================================================================#
 #                                                         WILD AREA CLASS                                                                     #
@@ -801,22 +802,6 @@ class story():
     def __init__(self,pokedex):
         self.pokedex = pokedex
 
-tackle = {"name": "Tackle", "damage":40, "accuracy":100, "type":"normal", "inflict damage":True}
-vine_whip = {"name": "Vine Whip", "damage":40, "accuracy":100, "type":"grass", "inflict damage":True}
-ember = {"name": "Ember", "damage":40, "accuracy":100, "type":"fire", "inflict damage":True}
-water_gun = {"name": "Water Gun", "damage":40, "accuracy":100, "type":"water", "inflict damage":True}
-growl = {"name": "Growl", "damage":40, "accuracy":100, "type":"normal", "inflict damage":False}
-none = {"name": ""}
-
-#bulbasaur = pokemon("Bulbasaur", 5, "grass", 45, 45, 49, 49, 45,  False, 0, tackle, vine_whip, growl, tackle)
-charmander = pokemon("Charmander", 5, "fire", 39, 39, 52, 43, 65, False, 0, tackle, ember, growl, tackle)
-#squirtle = pokemon("Squirtle", 5, "water", 44, 44, 48, 65, 43, False, 0, tackle, water_gun, growl, tackle)
-rattata = pokemon("Rattata", 5, "normal", 30, 30, 56, 35, 72, False, 0, tackle, tackle, tackle, tackle)
-pikachu = pokemon("Pikachu", 5, "electric", 35, 35, 55, 40, 90, False, 0, tackle, tackle, tackle, tackle)
-caterpie = pokemon("Caterpie", 5, "bug", 45, 45, 30, 35, 45, False, 0, tackle, tackle, tackle, tackle)
-ekans = pokemon("Ekans", 5, "poison", 35, 35, 60, 44, 55, False, 0, tackle, tackle, tackle, tackle)
-jigglypuff = pokemon("Jigglypuff", 5, "fairy", 115, 115, 45, 20, 20, False, 0, tackle, tackle, tackle, tackle)
-pidgey = pokemon("Pidgey", 5, "flying", 40, 40, 45, 40, 56, False, 0, tackle, tackle, tackle, tackle)
 
 pokemon_database = [rattata, pikachu, caterpie, ekans, jigglypuff, pidgey]
 
