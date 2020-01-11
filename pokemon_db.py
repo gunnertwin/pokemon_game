@@ -1,4 +1,4 @@
-from . import moves
+import moves
 class bulbasaur():
 
     def __init__(self):

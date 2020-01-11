@@ -1,6 +1,6 @@
 import os
 import random
-from pokemon_db.pokemon_db import *
+from pokemon_db import *
 
 #=============================================================================================================================================#
 #                                                         WILD AREA CLASS                                                                     #
