@@ -357,6 +357,7 @@ class Pokemon():
         {} used {} and has decreased {}'s {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, message))
 
         elif "poison" in self.opponent_move["effect"]:
+            self.your_pokemon.poisoned = True
             input("""
         {} used {} and has poisoned {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
 
@@ -584,6 +585,15 @@ class Pokemon():
                 input("""
         {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.opponent_pokemon.name, int(damage), int(self.opponent_pokemon.current_health)))
                 # turn += 1
+        
+        if self.your_pokemon.poisoned is True:
+            # turn = 0
+            # while turn < random.randint(1,3):
+            damage = self.your_pokemon.max_health / 100 * 10
+            self.your_pokemon.current_health = self.your_pokemon.current_health - damage
+            input("""
+        {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.your_pokemon.name, int(damage), int(self.your_pokemon.current_health)))
+            # turn += 1
 
 #=================================================================================================#
 #                                         TRAINER CLASS                                           #
@@ -745,7 +755,7 @@ class Trainer():
     def access_bag(self):
 
         choice = 0
-        while choice not in ("1", "2", "3", "4"):
+        while choice not in ("1", "2", "3", "4", "5"):
             os.system('clear')
 
             choice = input("""
@@ -753,7 +763,8 @@ class Trainer():
         1 - Use a potion: """ + str(self.items["potion"]) + """
         2 - Use a revive: """ + str(self.items["revive"]) + """
         3 - Use a poke ball: """ + str(self.items["poke ball"]) + """
-        4 - Exit
+        4 - Use an antidote: """ + str(self.items["antidote"]) + """
+        5 - Exit
 
         What do you want to do: """)
 
@@ -782,6 +793,14 @@ class Trainer():
                 Trainer.use_poke_ball(self)
 
         elif str(choice) == "4":
+            if self.items["poke ball"] == 0:
+                input("""
+        You don't have any antidotes left.""")
+                Trainer.access_bag(self)
+            else:
+                Trainer.use_antidote(self)
+
+        elif str(choice) == "5":
             Pokemon.next_action(self)
 
 #=================================================================================================#
@@ -814,6 +833,16 @@ class Trainer():
         input("""
         You threw a poke ball at """ + str(self.opponent_pokemon) + "!""")
 
+        Pokemon.lose_health(self)
+        Pokemon.next_action(self)
+
+    def use_antidote(self):
+        #if self.your_pokemon.poisoned is True:
+        self.items["antidote"] = self.items["antidote"] - 1
+        self.your_pokemon.poisoned
+        input("""
+        You have used an antidote on """ + str(self.your_pokemon) + "!, it is no longer poisoned.""")
+        
         Pokemon.lose_health(self)
         Pokemon.next_action(self)
 
@@ -924,7 +953,7 @@ class STORY():
 
 POKEMON_DATABASE = [bulbasaur, charmander, squirtle, rattata, pikachu, caterpie, ekans, jigglypuff, pidgey]
 
-ITEMS = {"potion": 0, "revive": 0, "poke ball": 0}
+ITEMS = {"potion": 0, "revive": 0, "poke ball": 0, "antidote": 5}
 Pokemon_team = []
 
 STORY = STORY(POKEMON_DATABASE)
