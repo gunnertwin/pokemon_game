@@ -31,7 +31,7 @@ class Wild_Area():
 #=================================================================================================#
 
 class Pokemon():
-    def __init__(self, name, level, type, max_health, current_health, attack, defence, speed, knocked_out, xp, move1, move2, move3, move4):
+    def __init__(self, name, level, type, max_health, current_health, attack, defence, speed, knocked_out, xp, move1, move2, move3, move4, poisoned, sleeping, paralyzed, burned):
         self.name = name
         self.level = level
         self.type = type
@@ -46,6 +46,10 @@ class Pokemon():
         self.move2 = move2
         self.move3 = move3
         self.move4 = move4
+        self.poisoned = poisoned
+        self.sleeping = sleeping
+        self.paralyzed = paralyzed
+        self.burned = burned
 
     def __repr__(self):
         return self.name
@@ -163,7 +167,7 @@ class Pokemon():
             message = "defence"
 
         elif self.chosen_move["effect"] == "increase defence":
-            self.opponent_pokemon.defence = self.opponent_pokemon.defence * 1.30
+            self.your_pokemon.defence = self.your_pokemon.defence * 1.30
             message = "defence"
 
         elif self.chosen_move["effect"] == "lower speed":
@@ -182,53 +186,66 @@ class Pokemon():
         if self.your_pokemon.speed < self.opponent_pokemon.speed:
             Pokemon.lose_health(self)
 
-        if self.chosen_move["inflict damage"] is True:
+        if random.randint(1, 100) <= self.chosen_move["accuracy"]:
+            if self.chosen_move["inflict damage"] is True:
 
-            if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
+                if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
 
-                input("""
+                    input("""
         Your {} used {} on {} and has inflicted {} HP, it's super effective! Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.current_health))
 
-            elif self.opponent_pokemon.current_health > 0:
+                elif self.opponent_pokemon.current_health > 0:
 
-                input("""
+                    input("""
         Your {} used {} on {} and has inflicted {} HP. Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.current_health))
 
-            elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
+                elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
 
-                input("""
+                    input("""
         Your {} used {} on {} and has inflicted {} HP, it's not very effective... Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.current_health))
 
-            elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for > 1:
+                elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for > 1:
 
-                input("""
+                    input("""
         Your {} has attacked {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
 
-                self.opponent_pokemon.knocked_out = True
-                self.opponent_pokemon.current_health = 0
-                Pokemon.xp(self)
+                    self.opponent_pokemon.knocked_out = True
+                    self.opponent_pokemon.current_health = 0
+                    Pokemon.xp(self)
 
-            elif self.opponent_pokemon.current_health <= 0:
+                elif self.opponent_pokemon.current_health <= 0:
 
-                input("""
+                    input("""
         Your {} has attacked {}, inflicting {} HP. {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
 
-                self.opponent_pokemon.knocked_out = True
-                self.opponent_pokemon.current_health = 0
-                Pokemon.xp(self)
+                    self.opponent_pokemon.knocked_out = True
+                    self.opponent_pokemon.current_health = 0
+                    Pokemon.xp(self)
 
-            elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for < 1:
+                elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for < 1:
 
-                input("""
+                    input("""
         Your {} has attacked {}, inflicting {} HP, it's not very effective... {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
 
-                self.opponent_pokemon.knocked_out = True
-                self.opponent_pokemon.current_health = 0
-                Pokemon.xp(self)
+                    self.opponent_pokemon.knocked_out = True
+                    self.opponent_pokemon.current_health = 0
+                    Pokemon.xp(self)
+
+            elif "lower" in self.chosen_move["effect"]:
+                input("""
+        Your {} used {} and has lowered {}'s {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, message ))
+
+            elif "increase" in self.chosen_move["effect"]:
+                input("""
+        Your {} used {} and has increased its {}.""".format(self.your_pokemon.name, self.chosen_move["name"], message))
+
+            elif "poison" in self.chosen_move["effect"]:
+                input("""
+        Your {} used {} and has poisoned {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
 
         else:
             input("""
-        Your {} used {} and has lowered {}'s {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, message ))
+        Your {} used {} but failed to land a hit.""".format(self.your_pokemon.name, self.chosen_move["name"]))
 
 
 #=================================================================================================#
@@ -301,7 +318,7 @@ class Pokemon():
             pass 
 
         elif self.opponent_move["effect"] == "inflict poison":
-            pass 
+            message = "poison" 
 
         elif self.opponent_move["effect"] == "inflict paralysis":
             pass 
@@ -358,9 +375,13 @@ class Pokemon():
             input("""
         {} used {} and has increased its {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], message))
 
-        else:
+        elif "lower" in self.opponent_move["effect"]:
             input("""
-        {} used {} and has lowered {}'s {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, message))
+        {} used {} and has decreased {}'s {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, message))
+
+        elif "poison" in self.opponent_move["effect"]:
+            input("""
+        {} used {} and has poisoned {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
 
 
 #=================================================================================================#
@@ -591,13 +612,16 @@ class Trainer():
 
     def NEW_TRAINER(self):
 
-        print("""
+        os.system('clear')
+        input("""
 
         Hi there!
         Welcome to the world of Pokémon!
         You can call me Juniper.
-        But you'll hear people calling me the Pokémon Professor.
+        But you'll hear people calling me the Pokémon Professor.""")
 
+        os.system('clear')
+        input("""
         Right! This world is full of Pocket Monsters...
         Well, usually called "Pokémon" for short! And they're fantastic creatures!
         Pokémon possess miraculous power, come in all shapes and sizes, live in all kinds of locales...
@@ -605,12 +629,13 @@ class Trainer():
         We're always there for each other, the both of us.
         But joining forces to help each other can often be a difficult task.
         And while it's their most popular role of all, making fellow Pokémon fight only binds them further.
-        And that's why I study Pokémon.
+        And that's why I study Pokémon.""")
 
-        Now, that's quite enough about me...
-        Won't you tell me some about yourself?""")
-
+        os.system('clear')
         self.name = input("""
+        Now, that's quite enough about me...
+        Won't you tell me some about yourself?
+
         So... tell me your name!
 
         Name: """)
@@ -626,20 +651,27 @@ class Trainer():
 
         elif choice == "y":
 
+            os.system('clear')
             input("""
-        Your name's """ + str(self.name) + """ ! That\'s just wonderful!""")
+        Your name's """ + str(self.name) + """! That\'s just wonderful!""")
 
+            os.system('clear')
             input("""
         Now then, allow me to introduce the friends who'll be with you on the way.
-        (A guy appears.)
-        This guy here is """ + str(self.rival_name) + """.
-        He's a bit moody at times, the fat cunt, but he's very frank about things.""")
+        (A guy appears.)""")
 
+            os.system('clear')
+            input("""
+        This guy here is """ + str(self.rival_name) + """.
+        He's a bit moody at times, and his face doesn't look bothered, but he's very frank about things.""")
+
+            os.system('clear')
             input("""
         And now, I've given the two of you a present containing your precious, long-awaited Pokémon.
         """+ str(self.name) + """!! From the moment you choose your Pokémon partner for the journey ahead...
         That is when the tale of your own adventure begins!""")
 
+            os.system('clear')
             input("""
         On this journey, you will meet countless Pokémon, and many people who think in different ways!
         Through all these meetings, I deeply hope you find something that you alone can treasure...
@@ -904,7 +936,7 @@ ITEMS = {"potion": 0, "revive": 0, "poke ball": 0}
 Pokemon_team = []
 
 STORY = STORY(POKEMON_DATABASE)
-POKEMON_TRAINER = Trainer("Daniel", "Liam", Pokemon_team, ITEMS, 1000, "", "")
-NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
+POKEMON_TRAINER = Trainer("Daniel", "Daniel", Pokemon_team, ITEMS, 1000, "", "")
+#NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
 
-#Trainer.NEW_TRAINER(POKEMON_TRAINER)
+Trainer.NEW_TRAINER(POKEMON_TRAINER)
