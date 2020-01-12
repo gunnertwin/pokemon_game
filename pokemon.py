@@ -75,9 +75,12 @@ class Pokemon():
         if str(choice) == "1":
             Pokemon.attack_pokemon(self)
             if self.your_pokemon.speed < self.opponent_pokemon.speed:
+                Pokemon.poisoned(self)
                 Pokemon.next_action(self)
+                
             else:
                 Pokemon.lose_health(self)
+                Pokemon.poisoned(self)
                 Pokemon.next_action(self)
         elif str(choice) == "2":
             Trainer.access_bag(self)
@@ -130,8 +133,8 @@ class Pokemon():
         elif str(choice) == "4":
             self.chosen_move = self.your_pokemon.move4
           
-        if self.your_pokemon.move4["inflict damage"] is True:
-            damage_dealt = (self.your_pokemon.level * 2 / 5) * self.your_pokemon.move4["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
+        if self.chosen_move["inflict damage"] is True:
+            damage_dealt = (self.your_pokemon.level * 2 / 5) * self.chosen_move["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
 
         Pokemon.effectiveness_for(self)
         damage_dealt = damage_dealt * self.effectiveness_for
@@ -178,7 +181,7 @@ class Pokemon():
                 if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
 
                     input("""
-        Your {} used {} on {} and has inflicted {} HP, it's super effective! Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.current_health))
+        Your {} used {} on {} and has inflicted {} HP, it's super effective! Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
 
                 elif self.opponent_pokemon.current_health > 0:
 
@@ -188,7 +191,7 @@ class Pokemon():
                 elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
 
                     input("""
-        Your {} used {} on {} and has inflicted {} HP, it's not very effective... Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.current_health))
+        Your {} used {} on {} and has inflicted {} HP, it's not very effective... Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
 
                 elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for > 1:
 
@@ -226,6 +229,7 @@ class Pokemon():
         Your {} used {} and has increased its {}.""".format(self.your_pokemon.name, self.chosen_move["name"], message))
 
             elif "poison" in self.chosen_move["effect"]:
+                self.opponent_pokemon.poisoned = True
                 input("""
         Your {} used {} and has poisoned {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
 
@@ -565,6 +569,21 @@ class Pokemon():
         input("""
         """ + str(self.your_pokemon) + """ has gained """ + str(points) + " XP!")
         Wild_Area.wild_pokemon(self)
+
+#=================================================================================================#
+#                                            POISONED!                                            #
+#=================================================================================================#
+
+    def poisoned(self):
+
+        if self.opponent_pokemon.poisoned is True:
+            # turn = 0
+            # while turn < random.randint(1,3):
+                damage = self.opponent_pokemon.max_health / 100 * 10
+                self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
+                input("""
+        {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.opponent_pokemon.name, int(damage), int(self.opponent_pokemon.current_health)))
+                # turn += 1
 
 #=================================================================================================#
 #                                         TRAINER CLASS                                           #
