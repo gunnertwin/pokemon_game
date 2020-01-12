@@ -13,10 +13,10 @@ class Wild_Area():
 
     def wild_pokemon(self):
 
-        self.opponent_pokemon = (random.randint(0, len(STORY.pokedex) - 1))
-        self.opponent_pokemon = POKEMON_DATABASE[self.opponent_pokemon]
+        number = (random.randint(0, len(STORY.pokedex) - 1))
+        wild_pokemon = POKEMON_DATABASE[number]
+        self.opponent_pokemon = Pokemon(**wild_pokemon)
         self.opponent_pokemon.level = random.randint(2, 5)
-        self.opponent_pokemon.current_health = self.opponent_pokemon.max_health
 
         input("""
         Something is moving in the grass... """)
@@ -41,12 +41,11 @@ class Pokemon():
         self.defence = defence
         self.speed = speed
         self.knocked_out = knocked_out
+        self.xp = xp
         self.move1 = move1
         self.move2 = move2
         self.move3 = move3
         self.move4 = move4
-        self.your_pokemon = your_pokemon
-        self.opponent_pokemon = opponent_pokemon
 
     def __repr__(self):
         return self.name
@@ -77,15 +76,15 @@ class Pokemon():
                 Pokemon.lose_health(self)
                 Pokemon.next_action(self)
         elif str(choice) == "2":
-            trainer.access_bag(self)
+            Trainer.access_bag(self)
 
         elif str(choice) == "3":
-            if len(list(self.POKEMON_TEAM)) == 1:
+            if len(list(self.Pokemon_team)) == 1:
                 input("""
         You cannot switch pokemon as you only have 1 pokemon in your party""")
                 Pokemon.next_action(self)
             else:
-                trainer.switch_pokemon(self)
+                Trainer.switch_pokemon(self)
 
         elif str(choice) == "4":
             input("""
@@ -562,7 +561,7 @@ class Trainer():
 #=================================================================================================#
 
     def starter(self):
-
+  
         os.system('clear')
         choice = 0
 
@@ -575,18 +574,18 @@ class Trainer():
         3 - Charmander
 
         Please select your starter Pokemon: """)
-
+        
         if str(choice) == "1":
-            self.your_pokemon = bulbasaur()
-            self.opponent_pokemon = squirtle()
+            self.your_pokemon = Pokemon(**bulbasaur)
+            self.opponent_pokemon = Pokemon(**squirtle)
 
         elif str(choice) == "2":
-            self.your_pokemon = squirtle()
-            self.opponent_pokemon = charmander()
+            self.your_pokemon = Pokemon(**squirtle)
+            self.opponent_pokemon = Pokemon(**charmander)
 
         elif str(choice) == "3":
-            self.your_pokemon = charmander()
-            self.opponent_pokemon = bulbasaur()
+            self.your_pokemon = Pokemon(**charmander)
+            self.opponent_pokemon = Pokemon(**bulbasaur)
 
         while choice not in ("y", "n"):
             choice = input("""
@@ -706,10 +705,10 @@ class Trainer():
 #=================================================================================================#
 
     def switch_pokemon(self):
-
+        
         for i in range(len(list(self.Pokemon_team))):
             print("""
-        """ + str(i+1) + " -  " + str(self.Pokemon_team[i]) + " | " + str(self.Pokemon_team[i].current_health) + "/" + str(self.Pokemon_team[i].max_health) + "HP | Level " + str(self.Pokemon_team[i].level))
+        """ + str(i+1) + " -  " + str(self.Pokemon_team[i].name) + " | " + str(self.Pokemon_team[i].current_health) + "/" + str(self.Pokemon_team[i].max_health) + "HP | Level " + str(self.Pokemon_team[i].level))
 
         choice = 0
         while choice not in ("1", "2", "3", "4", "5", "6"):
@@ -805,7 +804,7 @@ class STORY():
         self.pokedex = pokedex
 
 
-POKEMON_DATABASE = [rattata, pikachu, caterpie, ekans, jigglypuff, pidgey]
+POKEMON_DATABASE = [bulbasaur, charmander, squirtle, rattata, pikachu, caterpie, ekans, jigglypuff, pidgey]
 
 ITEMS = {"potion": 0, "revive": 0, "poke ball": 0}
 Pokemon_team = []
