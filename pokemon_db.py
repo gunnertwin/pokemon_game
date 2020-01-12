@@ -9,4 +9,3 @@ caterpie = {"name": "Caterpie", "level": 5, "type": "bug", "max_health": 45, "cu
 ekans = {"name": "Ekans", "level": 5, "type": "poison", "max_health": 35, "current_health": 35, "attack": 60, "defence": 44, "speed": 55, "knocked_out": False, "xp": 0, "move1": moves.poison_sting, "move2": moves.acid, "move3": moves.bite, "move4": moves.leer}
 jigglypuff = {"name": "Jigglypuff", "level": 5, "type": "fairy", "max_health": 115, "current_health": 115, "attack": 45, "defence": 20, "speed": 20, "knocked_out": False, "xp": 0, "move1": moves.sing, "move2": moves.pound, "move3": moves.defense_curl, "move4": moves.double_slap}
 pidgey = {"name": "Pidgey", "level": 5, "type": "flying", "max_health": 40, "current_health": 40, "attack": 45, "defence": 40, "speed": 56, "knocked_out": False, "xp": 0, "move1": moves.tackle, "move2": moves.sand_attack, "move3": moves.gust, "move4": moves.quick_attack}
-
