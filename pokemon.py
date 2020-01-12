@@ -119,34 +119,20 @@ class Pokemon():
         What do you want to do: """)
 
         if str(choice) == "1":
-            if self.your_pokemon.move1["inflict damage"] is True:
-                damage_dealt = (self.your_pokemon.level * 2 / 5) * self.your_pokemon.move1["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
-                self.chosen_move = self.your_pokemon.move1
-            else:
-                self.chosen_move = self.your_pokemon.move1
+            self.chosen_move = self.your_pokemon.move1
 
         elif str(choice) == "2":
-            if self.your_pokemon.move2["inflict damage"] is True:
-                damage_dealt = (self.your_pokemon.level * 2 / 5) * self.your_pokemon.move2["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
-                self.chosen_move = self.your_pokemon.move2
-            else:
-                self.chosen_move = self.your_pokemon.move2
+            self.chosen_move = self.your_pokemon.move2
 
         elif str(choice) == "3":
-            if self.your_pokemon.move3["inflict damage"] is True:
-                damage_dealt = (self.your_pokemon.level * 2 / 5) * self.your_pokemon.move3["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
-                self.chosen_move = self.your_pokemon.move3
-            else:
-                self.chosen_move = self.your_pokemon.move3
+            self.chosen_move = self.your_pokemon.move3
 
         elif str(choice) == "4":
-            if self.your_pokemon.move4["inflict damage"] is True:
-                damage_dealt = (self.your_pokemon.level * 2 / 5) * self.your_pokemon.move4["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
-                self.chosen_move = self.your_pokemon.move4
-            else:
-                self.chosen_move = self.your_pokemon.move4
+            self.chosen_move = self.your_pokemon.move4
+          
+        if self.your_pokemon.move4["inflict damage"] is True:
+            damage_dealt = (self.your_pokemon.level * 2 / 5) * self.your_pokemon.move4["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
 
-        self.opponent_move = self.opponent_pokemon.move1
         Pokemon.effectiveness_for(self)
         damage_dealt = damage_dealt * self.effectiveness_for
         self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - int(damage_dealt)
@@ -260,32 +246,19 @@ class Pokemon():
         random_number = random.randint(1, 4)
 
         if random_number == 1:
-            if self.opponent_pokemon.move1["inflict damage"] is True:
-                damage_received = (self.opponent_pokemon.level * 2 / 5) * self.opponent_pokemon.move1["damage"] * (self.opponent_pokemon.attack / self.your_pokemon.defence + 2) / 50
-                self.opponent_move = self.opponent_pokemon.move1
-            else:
-                self.opponent_move = self.opponent_pokemon.move1
+            self.opponent_move = self.opponent_pokemon.move1
 
         elif random_number == 2:
-            if self.opponent_pokemon.move2["inflict damage"] is True:
-                damage_received = (self.opponent_pokemon.level * 2 / 5) * self.opponent_pokemon.move2["damage"] * (self.opponent_pokemon.attack / self.your_pokemon.defence + 2) / 50
-                self.opponent_move = self.opponent_pokemon.move2
-            else:
-                self.opponent_move = self.opponent_pokemon.move2
+            self.opponent_move = self.opponent_pokemon.move2
 
         elif random_number == 3:
-            if self.opponent_pokemon.move3["inflict damage"] is True:
-                damage_received = (self.opponent_pokemon.level * 2 / 5) * self.opponent_pokemon.move3["damage"] * (self.opponent_pokemon.attack / self.your_pokemon.defence + 2) / 50
-                self.opponent_move = self.opponent_pokemon.move3
-            else:
-                self.opponent_move = self.opponent_pokemon.move3
+            self.opponent_move = self.opponent_pokemon.move3
 
         elif random_number == 4:
-            if self.opponent_pokemon.move4["inflict damage"] is True:
-                damage_received = (self.opponent_pokemon.level * 2 / 5) * self.opponent_pokemon.move4["damage"] * (self.opponent_pokemon.attack / self.your_pokemon.defence + 2) / 50
-                self.opponent_move = self.opponent_pokemon.move4
-            else:
-                self.opponent_move = self.opponent_pokemon.move4
+            self.opponent_move = self.opponent_pokemon.move4
+
+        if self.opponent_move["inflict damage"] is True:
+            damage_received = (self.opponent_pokemon.level * 2 / 5) * self.opponent_move["damage"] * (self.opponent_pokemon.attack / self.your_pokemon.defence + 2) / 50
 
         Pokemon.effectiveness_against(self)
         damage_received = damage_received * self.effectiveness_against
@@ -937,6 +910,6 @@ Pokemon_team = []
 
 STORY = STORY(POKEMON_DATABASE)
 POKEMON_TRAINER = Trainer("Daniel", "Daniel", Pokemon_team, ITEMS, 1000, "", "")
-#NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
+NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
 
-Trainer.NEW_TRAINER(POKEMON_TRAINER)
+#Trainer.NEW_TRAINER(POKEMON_TRAINER)
