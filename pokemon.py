@@ -186,7 +186,7 @@ class Pokemon():
                 elif self.opponent_pokemon.current_health > 0:
 
                     input("""
-        Your {} used {} on {} and has inflicted {} HP. Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.current_health))
+        Your {} used {} on {} and has inflicted {} HP. Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
 
                 elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
 
@@ -303,15 +303,15 @@ class Pokemon():
         if self.opponent_move["inflict damage"] is True:
             if self.your_pokemon.current_health > 0 and self.effectiveness_against > 1:
                 input("""
-        {} used {} on {}, inflicting {} HP, it's super effective! Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), self.your_pokemon.current_health))
+        {} used {} on {}, inflicting {} HP, it's super effective! Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
             elif self.your_pokemon.current_health > 0 and self.effectiveness_against < 1:
                 input("""
-        {} used {} on {}, inflicting {} HP, it's not very effective... Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), self.your_pokemon.current_health))
+        {} used {} on {}, inflicting {} HP, it's not very effective... Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
             elif self.your_pokemon.current_health > 0:
                 input("""
-        {} used {} on {}, inflicting {} HP. Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), self.your_pokemon.current_health))
+        {} used {} on {}, inflicting {} HP. Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
             elif self.your_pokemon.current_health <= 0 and self.effectiveness_against > 1:
                 self.your_pokemon.knocked_out = True
