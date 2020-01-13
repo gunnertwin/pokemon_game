@@ -16,7 +16,13 @@ class Wild_Area():
         number = (random.randint(0, len(STORY.pokedex) - 1))
         wild_pokemon = POKEMON_DATABASE[number]
         self.opponent_pokemon = Pokemon(**wild_pokemon)
-        self.opponent_pokemon.level = random.randint(2, 5)
+        self.opponent_pokemon.level = random.randint(5, 10)
+
+        self.opponent_pokemon.attack = self.opponent_pokemon.attack + (self.opponent_pokemon.level - 5) * 2
+        self.opponent_pokemon.defence = self.opponent_pokemon.defence + (self.opponent_pokemon.level - 5) * 2
+        self.opponent_pokemon.speed = self.opponent_pokemon.speed + (self.opponent_pokemon.level - 5) * 2
+        self.opponent_pokemon.max_health = self.opponent_pokemon.max_health + (self.opponent_pokemon.level - 5) * 2
+        self.opponent_pokemon.current_health = self.opponent_pokemon.max_health
 
         input("""
         Something is moving in the grass... """)
@@ -400,58 +406,46 @@ class Pokemon():
 
         elif self.opponent_move["inflict damage"] is True:
             if self.your_pokemon.current_health > 0 and self.effectiveness_against > 1:
+
                 input("""
         {} used {} on {}, inflicting {} HP, it's super effective! Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
             elif self.your_pokemon.current_health > 0 and self.effectiveness_against < 1:
+
                 input("""
         {} used {} on {}, inflicting {} HP, it's not very effective... Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
             elif self.your_pokemon.current_health > 0:
+
                 input("""
         {} used {} on {}, inflicting {} HP. Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
             elif self.your_pokemon.current_health <= 0 and self.effectiveness_against > 1:
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
+
                 input("""
         {} used {} on {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for i in range(len(list(self.Pokemon_team))):
-                    if Pokemon_team[i].knocked_out is False:
-                        input("""
-        Please switch out your next pokemon""")
-                        Trainer.switch_pokemon(self)
-                return input("""
-        Game over, all your Pokemon have fainted""")
+                Pokemon.fainted(self)
 
             elif self.your_pokemon.current_health <= 0 and self.effectiveness_against < 1:
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
+
                 input("""
         {} has attacked your {}, inflicting {} HP, it's not very effective... {} has fainted.""".format(self.opponent_pokemon.name, self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for i in range(len(list(self.Pokemon_team))):
-                    if Pokemon_team[i].knocked_out is False:
-                        input("""
-        Please switch out your next pokemon""")
-                        Trainer.switch_pokemon(self)
-                return input("""
-        Game over, all your Pokemon have fainted""")
+                Pokemon.fainted(self)
 
             elif self.your_pokemon.current_health <= 0:
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
+
                 input("""
         {} has attacked your {}, inflicting {} HP. {} has fainted.""".format(self.opponent_pokemon.name, self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for i in range(len(list(self.Pokemon_team))):
-                    if Pokemon_team[i].knocked_out is False:
-                        input("""
-        Please switch out your next pokemon""")
-                        Trainer.switch_pokemon(self)
-                return input("""
-        Game over, all your Pokemon have fainted""")
+                Pokemon.fainted(self)
 
             if "burn" in self.opponent_move["effect"] and random.randint(1,100) >=85 and self.your_pokemon.burned is False:
                 self.your_pokemon.burned = True
@@ -716,11 +710,42 @@ class Pokemon():
 
     def xp(self):
 
-        points = 0
+        points = self.opponent_pokemon.level ** 2
+        self.your_pokemon.xp += points 
 
         input("""
         """ + str(self.your_pokemon) + """ has gained """ + str(points) + " XP!")
+
+        if self.your_pokemon.level ** 3 <= self.your_pokemon.xp:
+            while self.your_pokemon.level ** 3 <= self.your_pokemon.xp:
+                self.your_pokemon.level += 1
+                self.your_pokemon.attack = self.your_pokemon.attack * 1.045
+                self.your_pokemon.defence = self.your_pokemon.defence * 1.045
+                self.your_pokemon.speed = self.your_pokemon.speed * 1.045
+                self.your_pokemon.max_health = self.your_pokemon.max_health * 1.05
+                self.your_pokemon.current_health = self.your_pokemon.max_health
+                hp_up = self.your_pokemon.max_health * 1.05 - self.your_pokemon.max_health
+                attack_up = self.your_pokemon.attack * 1.05 - self.your_pokemon.attack
+                defence_up = self.your_pokemon.defence * 1.05 - self.your_pokemon.defence
+                speed_up = self.your_pokemon.speed * 1.05 - self.your_pokemon.speed
+                
+                input("""
+        """ + str(self.your_pokemon) + """ has grown to level """ + str(self.your_pokemon.level) + "!")
+
+                os.system('clear')
+
+                input("""
+        {}'s stats grew!
+
+        Level:   {} +1
+        HP:      {} +{}
+        Attack:  {} +{}
+        Defence: {} +{}
+        Speed:   {} +{}
+        """.format(self.your_pokemon, self.your_pokemon.level, int(self.your_pokemon.max_health), int(hp_up), int(self.your_pokemon.attack), int(attack_up), int(self.your_pokemon.defence), int(defence_up), int(self.your_pokemon.speed), int(speed_up)))
+
         Wild_Area.wild_pokemon(self)
+
 
 #=================================================================================================#
 #                                         STATUS AILMENTS!                                        #
@@ -731,28 +756,88 @@ class Pokemon():
         if self.opponent_pokemon.poisoned is True:
                 damage = self.opponent_pokemon.max_health / 100 * 10
                 self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
+
+                if self.opponent_pokemon.current_health <= 0:
+                    self.opponent_pokemon.knocked_out = True
+                    self.opponent_pokemon.current_health = 0
+
+                    input("""
+        {} has been hurt by poison. It has fainted.""".format(self.opponent_pokemon.name))
+
+                    Pokemon.xp(self)
+
                 input("""
-        {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.opponent_pokemon.name, int(damage), int(self.opponent_pokemon.current_health)))
+        {} has been hurt by poison. Its HP has decreased to {}""".format(self.opponent_pokemon.name, int(self.opponent_pokemon.current_health)))
 
         if self.your_pokemon.poisoned is True:
             damage = self.your_pokemon.max_health / 100 * 10
             self.your_pokemon.current_health = self.your_pokemon.current_health - damage
+
+            if self.your_pokemon.current_health <= 0:
+                self.your_pokemon.current_health = 0
+
+                input("""
+        {} has been hurt by poison. It has fainted.""".format(self.your_pokemon.name))
+
+                self.your_pokemon.knocked_out = True
+                Pokemon.fainted(self)
+                
             input("""
-        {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.your_pokemon.name, int(damage), int(self.your_pokemon.current_health)))
+        {} has been hurt by poison. Its HP has decreased to {}""".format(self.your_pokemon.name, int(self.your_pokemon.current_health)))
 
     def burned(self):
 
         if self.opponent_pokemon.burned is True:
             damage = self.opponent_pokemon.max_health / 100 * 10
             self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
+
+            if self.opponent_pokemon.current_health <= 0:
+                self.opponent_pokemon.knocked_out = True
+                self.opponent_pokemon.current_health = 0
+
+                input("""
+        {} has been hurt by its burn. It has fainted.""".format(self.opponent_pokemon.name))
+
+                Pokemon.xp(self)
+
             input("""
-        {} has been hurt by its burn. Its HP has decreased by {} to {}""".format(self.opponent_pokemon.name, int(damage), int(self.opponent_pokemon.current_health)))
+        {} has been hurt by its burn. Its HP has decreased to {}""".format(self.opponent_pokemon.name, int(self.opponent_pokemon.current_health)))
 
         if self.your_pokemon.burned is True:
             damage = self.your_pokemon.max_health / 100 * 10
             self.your_pokemon.current_health = self.your_pokemon.current_health - damage
+
+            if self.your_pokemon.current_health <= 0:
+                self.your_pokemon.current_health = 0
+
+                input("""
+        {} has been hurt by its burn. It has fainted.""".format(self.your_pokemon.name))
+
+                self.your_pokemon.knocked_out = True
+                Pokemon.fainted(self)
+
             input("""
-        {} has been hurt by its burn. Its HP has decreased by {} to {}""".format(self.your_pokemon.name, int(damage), int(self.your_pokemon.current_health)))
+        {} has been hurt by its burn. Its HP has decreased to {}""".format(self.your_pokemon.name, int(self.your_pokemon.current_health)))
+
+
+#=================================================================================================#
+#                                           FAINTED                                               #
+#=================================================================================================#
+
+    def fainted(self):
+
+        for i in range(len(list(self.Pokemon_team))):
+            if Pokemon_team[i].knocked_out is False:
+                
+                input("""
+        Please switch out your next pokemon""")
+                
+                Trainer.switch_pokemon(self)
+                    
+        return input("""
+        Game over, all your Pokemon have fainted""")
+        exit(0)
+
 
 #=================================================================================================#
 #                                         TRAINER CLASS                                           #
@@ -1021,6 +1106,7 @@ class Trainer():
 
     def switch_pokemon(self):
         
+        os.system('clear')
         for i in range(len(list(self.Pokemon_team))):
             print("""
         """ + str(i+1) + " -  " + str(self.Pokemon_team[i].name) + " | " + str(self.Pokemon_team[i].current_health) + "/" + str(self.Pokemon_team[i].max_health) + "HP | Level " + str(self.Pokemon_team[i].level))
@@ -1029,12 +1115,12 @@ class Trainer():
         while choice not in ("1", "2", "3", "4", "5", "6"):
 
             choice = input("""
-            Select the pokemon you want: """)
+        Select the pokemon you want to switch to: """)
 
             if str(choice) == "1":
                 if self.Pokemon_team[0].knocked_out is True:
                     input("""
-            You can not battle with a fainted Pokemon.""")
+        You can not battle with a fainted Pokemon.""")
                     Trainer.switch_pokemon(self)
                 else:
                     Pokemon.next_action(self)
@@ -1042,7 +1128,7 @@ class Trainer():
             elif str(choice) == "2":
                 if self.Pokemon_team[1].knocked_out is True:
                     input("""
-            You can not battle with a fainted Pokemon.""")
+        You can not battle with a fainted Pokemon.""")
                     Trainer.switch_pokemon(self)
 
                 else:
@@ -1050,13 +1136,14 @@ class Trainer():
                     self.Pokemon_team.pop(1)
                     self.Pokemon_team.insert(0, self.your_pokemon)
                     input("""
-            GO """ + str(self.your_pokemon) + """!""")
+        GO """ + str(self.your_pokemon) + """!""")
+                    Pokemon.lose_health(self)
                     Pokemon.next_action(self)
 
             elif str(choice) == "3":
                 if self.Pokemon_team[2].knocked_out is True:
                     input("""
-            You can not battle with a fainted Pokemon.""")
+        You can not battle with a fainted Pokemon.""")
                     Trainer.switch_pokemon(self)
 
                 else:
@@ -1064,13 +1151,14 @@ class Trainer():
                     self.Pokemon_team.pop(2)
                     self.Pokemon_team.insert(0, self.your_pokemon)
                     input("""
-            GO """ + str(self.your_pokemon) + """!""")
+        GO """ + str(self.your_pokemon) + """!""")
+                    Pokemon.lose_health(self)
                     Pokemon.next_action(self)
 
             elif str(choice) == "4":
                 if self.Pokemon_team[3].knocked_out is True:
                     input("""
-            You can not battle with a fainted Pokemon.""")
+        You can not battle with a fainted Pokemon.""")
                     Trainer.switch_pokemon(self)
 
                 else:
@@ -1078,13 +1166,14 @@ class Trainer():
                     self.Pokemon_team.pop(3)
                     self.Pokemon_team.insert(0, self.your_pokemon)
                     input("""
-            GO """ + str(self.your_pokemon) + """!""")
+        GO """ + str(self.your_pokemon) + """!""")
+                    Pokemon.lose_health(self)
                     Pokemon.next_action(self)
 
             elif str(choice) == "5":
                 if self.Pokemon_team[4].knocked_out is True:
                     input("""
-            You can not battle with a fainted Pokemon.""")
+        You can not battle with a fainted Pokemon.""")
                     Trainer.switch_pokemon(self)
 
                 else:
@@ -1092,13 +1181,14 @@ class Trainer():
                     self.Pokemon_team.pop(4)
                     self.Pokemon_team.insert(0, self.your_pokemon)
                     input("""
-            GO """ + str(self.your_pokemon) + """!""")
+        GO """ + str(self.your_pokemon) + """!""")
+                    Pokemon.lose_health(self)
                     Pokemon.next_action(self)
 
             elif str(choice) == "6":
                 if self.Pokemon_team[5].knocked_out is True:
                     input("""
-            You can not battle with a fainted Pokemon.""")
+        You can not battle with a fainted Pokemon.""")
                     Trainer.switch_pokemon(self)
 
                 else:
@@ -1106,7 +1196,8 @@ class Trainer():
                     self.Pokemon_team.pop(5)
                     self.Pokemon_team.insert(0, self.your_pokemon)
                     input("""
-            GO """ + str(self.your_pokemon) + """!""")
+        GO """ + str(self.your_pokemon) + """!""")
+                    Pokemon.lose_health(self)
                     Pokemon.next_action(self)
 
 #=================================================================================================#
