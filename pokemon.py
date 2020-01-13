@@ -121,7 +121,7 @@ class Pokemon():
         damage_dealt = 0
         choice = 0
 
-        while choice not in ("1", "2", "3", "4"):
+        while choice not in ("1", "2", "3", "4", "5"):
             os.system('clear')
             choice = input("""
 
@@ -129,6 +129,8 @@ class Pokemon():
         2 - """ + str(self.your_pokemon.move2["name"]) + """
         3 - """ + str(self.your_pokemon.move3["name"]) + """
         4 - """ + str(self.your_pokemon.move4["name"]) + """
+
+        5 - Exit
 
         What do you want to do: """)
 
@@ -143,6 +145,9 @@ class Pokemon():
 
         elif str(choice) == "4":
             self.chosen_move = self.your_pokemon.move4
+
+        elif str(choice) == "5":
+            Pokemon.next_action(self)
           
         if self.chosen_move["inflict damage"] is True:
             damage_dealt = (self.your_pokemon.level * 2 / 5) * self.chosen_move["damage"] * (self.your_pokemon.attack / self.opponent_pokemon.defence + 2) / 50
@@ -215,22 +220,22 @@ class Pokemon():
 
         elif self.chosen_move["inflict damage"] is True:
 
-            if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
+            if int(self.opponent_pokemon.current_health) > 0 and self.effectiveness_for > 1:
 
                 input("""
         Your {} used {} on {} and has inflicted {} HP, it's super effective! Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
 
-            elif self.opponent_pokemon.current_health > 0:
+            elif int(self.opponent_pokemon.current_health) > 0:
 
                 input("""
         Your {} used {} on {} and has inflicted {} HP. Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
 
-            elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
+            elif int(self.opponent_pokemon.current_health) > 0 and self.effectiveness_for < 1:
 
                 input("""
         Your {} used {} on {} and has inflicted {} HP, it's not very effective... Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
 
-            elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for > 1:
+            elif int(self.opponent_pokemon.current_health) <= 0 and self.effectiveness_for > 1:
 
                 input("""
         Your {} has attacked {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
@@ -239,7 +244,7 @@ class Pokemon():
                 self.opponent_pokemon.current_health = 0
                 Pokemon.xp(self)
 
-            elif self.opponent_pokemon.current_health <= 0:
+            elif int(self.opponent_pokemon.current_health) <= 0:
 
                 input("""
         Your {} has attacked {}, inflicting {} HP. {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
@@ -248,7 +253,7 @@ class Pokemon():
                 self.opponent_pokemon.current_health = 0
                 Pokemon.xp(self)
 
-            elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for < 1:
+            elif int(self.opponent_pokemon.current_health) <= 0 and self.effectiveness_for < 1:
 
                 input("""
         Your {} has attacked {}, inflicting {} HP, it's not very effective... {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
@@ -405,22 +410,22 @@ class Pokemon():
         {} used {} but failed to land a hit.""".format(self.opponent_pokemon.name, self.opponent_move["name"]))
 
         elif self.opponent_move["inflict damage"] is True:
-            if self.your_pokemon.current_health > 0 and self.effectiveness_against > 1:
+            if int(self.your_pokemon.current_health) > 0 and self.effectiveness_against > 1:
 
                 input("""
         {} used {} on {}, inflicting {} HP, it's super effective! Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
-            elif self.your_pokemon.current_health > 0 and self.effectiveness_against < 1:
+            elif int(self.your_pokemon.current_health) > 0 and self.effectiveness_against < 1:
 
                 input("""
         {} used {} on {}, inflicting {} HP, it's not very effective... Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
-            elif self.your_pokemon.current_health > 0:
+            elif int(self.your_pokemon.current_health) > 0:
 
                 input("""
         {} used {} on {}, inflicting {} HP. Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
 
-            elif self.your_pokemon.current_health <= 0 and self.effectiveness_against > 1:
+            elif int(self.your_pokemon.current_health) <= 0 and self.effectiveness_against > 1:
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
 
@@ -429,7 +434,7 @@ class Pokemon():
 
                 Pokemon.fainted(self)
 
-            elif self.your_pokemon.current_health <= 0 and self.effectiveness_against < 1:
+            elif int(self.your_pokemon.current_health) <= 0 and self.effectiveness_against < 1:
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
 
@@ -438,7 +443,7 @@ class Pokemon():
 
                 Pokemon.fainted(self)
 
-            elif self.your_pokemon.current_health <= 0:
+            elif int(self.your_pokemon.current_health) <= 0:
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
 
@@ -757,7 +762,7 @@ class Pokemon():
                 damage = self.opponent_pokemon.max_health / 100 * 10
                 self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
 
-                if self.opponent_pokemon.current_health <= 0:
+                if int(self.opponent_pokemon.current_health) <= 0:
                     self.opponent_pokemon.knocked_out = True
                     self.opponent_pokemon.current_health = 0
 
@@ -773,7 +778,7 @@ class Pokemon():
             damage = self.your_pokemon.max_health / 100 * 10
             self.your_pokemon.current_health = self.your_pokemon.current_health - damage
 
-            if self.your_pokemon.current_health <= 0:
+            if int(self.your_pokemon.current_health) <= 0:
                 self.your_pokemon.current_health = 0
 
                 input("""
@@ -791,7 +796,7 @@ class Pokemon():
             damage = self.opponent_pokemon.max_health / 100 * 10
             self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
 
-            if self.opponent_pokemon.current_health <= 0:
+            if int(self.opponent_pokemon.current_health) <= 0:
                 self.opponent_pokemon.knocked_out = True
                 self.opponent_pokemon.current_health = 0
 
@@ -807,7 +812,7 @@ class Pokemon():
             damage = self.your_pokemon.max_health / 100 * 10
             self.your_pokemon.current_health = self.your_pokemon.current_health - damage
 
-            if self.your_pokemon.current_health <= 0:
+            if int(self.your_pokemon.current_health) <= 0:
                 self.your_pokemon.current_health = 0
 
                 input("""
@@ -1056,10 +1061,10 @@ class Trainer():
 
         self.items["potion"] = self.items["potion"] - 1
         self.your_pokemon.current_health = self.your_pokemon.current_health + 30
-        if self.your_pokemon.current_health > self.your_pokemon.max_health:
+        if int(self.your_pokemon.current_health) > self.your_pokemon.max_health:
             self.your_pokemon.current_health = self.your_pokemon.max_health
         input("""
-        You have used a potion on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, self.your_pokemon.current_health))
+        You have used a potion on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, int(self.your_pokemon.current_health)))
 
         Pokemon.lose_health(self)
         Pokemon.poisoned(self)
@@ -1070,7 +1075,7 @@ class Trainer():
         self.items["revive"] = self.items["revive"] - 1
         self.your_pokemon.current_health = self.your_pokemon.max_health / 2
         input("""
-        You have used a revive on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, self.your_pokemon.current_health))
+        You have used a revive on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, int(self.your_pokemon.current_health)))
 
         Pokemon.lose_health(self)
         Pokemon.poisoned(self)
@@ -1109,8 +1114,8 @@ class Trainer():
         os.system('clear')
         for i in range(len(list(self.Pokemon_team))):
             print("""
-        """ + str(i+1) + " -  " + str(self.Pokemon_team[i].name) + " | " + str(self.Pokemon_team[i].current_health) + "/" + str(self.Pokemon_team[i].max_health) + "HP | Level " + str(self.Pokemon_team[i].level))
-
+        {} - {} | {}/{}HP | Level {}""".format(i+1, self.Pokemon_team[i].name, int(self.Pokemon_team[i].current_health), int(self.Pokemon_team[i].max_health), self.Pokemon_team[i].level))
+        
         choice = 0
         while choice not in ("1", "2", "3", "4", "5", "6"):
 
