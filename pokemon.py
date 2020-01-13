@@ -76,12 +76,15 @@ class Pokemon():
             Pokemon.attack_pokemon(self)
             if self.your_pokemon.speed < self.opponent_pokemon.speed:
                 Pokemon.poisoned(self)
+                Pokemon.burned(self)
                 Pokemon.next_action(self)
                 
             else:
                 Pokemon.lose_health(self)
                 Pokemon.poisoned(self)
+                Pokemon.burned(self)
                 Pokemon.next_action(self)
+
         elif str(choice) == "2":
             Trainer.access_bag(self)
 
@@ -110,6 +113,7 @@ class Pokemon():
     def attack_pokemon(self):
         damage_dealt = 0
         choice = 0
+
         while choice not in ("1", "2", "3", "4"):
             os.system('clear')
             choice = input("""
@@ -170,12 +174,16 @@ class Pokemon():
             message = "poison" 
 
         elif self.chosen_move["effect"] == "inflict paralysis":
-            message = "paralysis" 
+            message = "paralysis"
+
+        elif self.chosen_move["effect"] == "inflict burn":
+            message = "burn" 
 
         if self.your_pokemon.speed < self.opponent_pokemon.speed:
             Pokemon.lose_health(self)
 
         if random.randint(1, 100) <= self.chosen_move["accuracy"]:
+
             if self.chosen_move["inflict damage"] is True:
 
                 if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
@@ -221,21 +229,38 @@ class Pokemon():
                     Pokemon.xp(self)
 
             elif "lower" in self.chosen_move["effect"]:
+
                 input("""
         Your {} used {} and has lowered {}'s {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, message ))
 
             elif "increase" in self.chosen_move["effect"]:
+
                 input("""
         Your {} used {} and has increased its {}.""".format(self.your_pokemon.name, self.chosen_move["name"], message))
 
             elif "poison" in self.chosen_move["effect"]:
-                self.opponent_pokemon.poisoned = True
-                input("""
+
+                if self.opponent_pokemon.poisoned is True:
+
+                    input("""
+        Your {} used {} but the move failed as {} is already Poisoned.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
+
+                else: 
+                    self.opponent_pokemon.poisoned = True
+
+                    input("""
         Your {} used {} and has poisoned {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
 
         else:
+
             input("""
         Your {} used {} but failed to land a hit.""".format(self.your_pokemon.name, self.chosen_move["name"]))
+
+        if "burn" in self.chosen_move["effect"] and random.randint(1,100) >= 90 and self.opponent_pokemon.burned is False:
+            self.opponent_pokemon.burned = True
+            
+            input("""
+        {} has been inflicted with a burn.""".format(self.opponent_pokemon.name))
 
 
 #=================================================================================================#
@@ -317,9 +342,9 @@ class Pokemon():
                 self.your_pokemon.knocked_out = True
                 self.your_pokemon.current_health = 0
                 input("""
-        {} has attacked your {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.opponent_pokemon.name, self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
+        {} used {} on {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for pokemon in self.POKEMON_TEAM:
+                for pokemon in self.Pokemon_team:
                     if Pokemon.knocked_out is False:
                         trainer.switch_pokemon(self)
 
@@ -357,9 +382,28 @@ class Pokemon():
         {} used {} and has decreased {}'s {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, message))
 
         elif "poison" in self.opponent_move["effect"]:
-            self.your_pokemon.poisoned = True
-            input("""
+
+            if self.your_pokemon.poisoned is True:
+
+                input("""
+        {} used {} but the move failed as {} is already Poisoned.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
+
+            else: 
+                self.your_pokemon.poisoned = True 
+
+                input("""
         {} used {} and has poisoned {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
+
+        else:
+
+            input("""
+        {} used {} but failed to land a hit.""".format(self.opponent_pokemon.name, self.opponent_move["name"]))
+
+        if "burn" in self.opponent_move["effect"] and random.randint(1,100) >=90 and self.your_pokemon.burned is False:
+            self.your_pokemon.burned = True
+            
+            input("""
+        {} has been inflicted with a burn.""".format(self.your_pokemon.name))
 
 
 #=================================================================================================#
@@ -572,28 +616,37 @@ class Pokemon():
         Wild_Area.wild_pokemon(self)
 
 #=================================================================================================#
-#                                            POISONED!                                            #
+#                                         STATUS AILMENTS!                                        #
 #=================================================================================================#
 
     def poisoned(self):
 
         if self.opponent_pokemon.poisoned is True:
-            # turn = 0
-            # while turn < random.randint(1,3):
                 damage = self.opponent_pokemon.max_health / 100 * 10
                 self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
                 input("""
         {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.opponent_pokemon.name, int(damage), int(self.opponent_pokemon.current_health)))
-                # turn += 1
-        
+
         if self.your_pokemon.poisoned is True:
-            # turn = 0
-            # while turn < random.randint(1,3):
             damage = self.your_pokemon.max_health / 100 * 10
             self.your_pokemon.current_health = self.your_pokemon.current_health - damage
             input("""
         {} has been hurt by poison. Its HP has decreased by {} to {}""".format(self.your_pokemon.name, int(damage), int(self.your_pokemon.current_health)))
-            # turn += 1
+
+    def burned(self):
+
+        if self.opponent_pokemon.burned is True:
+            damage = self.opponent_pokemon.max_health / 100 * 10
+            self.opponent_pokemon.current_health = self.opponent_pokemon.current_health - damage
+            input("""
+        {} has been hurt by its burn. Its HP has decreased by {} to {}""".format(self.opponent_pokemon.name, int(damage), int(self.opponent_pokemon.current_health)))
+
+        if self.your_pokemon.burned is True:
+            damage = self.your_pokemon.max_health / 100 * 10
+            self.your_pokemon.current_health = self.your_pokemon.current_health - damage
+            input("""
+        {} has been hurt by its burn. Its HP has decreased by {} to {}""".format(self.your_pokemon.name, int(damage), int(self.your_pokemon.current_health)))
+
 
 #=================================================================================================#
 #                                         TRAINER CLASS                                           #
@@ -793,7 +846,7 @@ class Trainer():
                 Trainer.use_poke_ball(self)
 
         elif str(choice) == "4":
-            if self.items["poke ball"] == 0:
+            if self.items["antidote"] == 0:
                 input("""
         You don't have any antidotes left.""")
                 Trainer.access_bag(self)
@@ -817,6 +870,8 @@ class Trainer():
         You have used a potion on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, self.your_pokemon.current_health))
 
         Pokemon.lose_health(self)
+        Pokemon.poisoned(self)
+        Pokemon.burned(self)
         Pokemon.next_action(self)
 
     def use_revive(self):
@@ -826,6 +881,8 @@ class Trainer():
         You have used a revive on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, self.your_pokemon.current_health))
 
         Pokemon.lose_health(self)
+        Pokemon.poisoned(self)
+        Pokemon.burned(self)
         Pokemon.next_action(self)
 
     def use_poke_ball(self):
@@ -834,16 +891,20 @@ class Trainer():
         You threw a poke ball at """ + str(self.opponent_pokemon) + "!""")
 
         Pokemon.lose_health(self)
+        Pokemon.poisoned(self)
+        Pokemon.burned(self)
         Pokemon.next_action(self)
 
     def use_antidote(self):
         #if self.your_pokemon.poisoned is True:
         self.items["antidote"] = self.items["antidote"] - 1
-        self.your_pokemon.poisoned
+        self.your_pokemon.poisoned = False
         input("""
         You have used an antidote on """ + str(self.your_pokemon) + "!, it is no longer poisoned.""")
         
         Pokemon.lose_health(self)
+        Pokemon.poisoned(self)
+        Pokemon.burned(self)
         Pokemon.next_action(self)
 
 
