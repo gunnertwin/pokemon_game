@@ -10,7 +10,7 @@ pound = {"name": "Pound", "damage":40, "accuracy":100, "type":"normal", "inflict
 defense_curl = {"name": "Defense curl", "damage":0, "accuracy":100, "type":"normal", "inflict damage":False, "effect":"increase defence"}
 double_slap = {"name": "Double slap", "damage":30, "accuracy":85, "type":"normal", "inflict damage":True, "effect":""}
 poison_sting = {"name": "Poison Sting", "damage":15, "accuracy":100, "type":"poison", "inflict damage":True, "effect":"inflict poison"}
-acid = {"name": "Acid", "damage":0, "accuracy":100, "type":"poison", "inflict damage":False, "effect":"inflict poison"}
+acid = {"name": "Acid", "damage":40, "accuracy":100, "type":"poison", "inflict damage":True, "effect":""}
 bite = {"name": "Bite", "damage":40, "accuracy":100, "type":"dark", "inflict damage":True, "effect":""}
 leer = {"name": "Leer", "damage":0, "accuracy":100, "type":"normal", "inflict damage":False, "effect":"lower attack"}
 string_shot = {"name": "String shot", "damage":0, "accuracy":95, "type":"bug", "inflict damage":False, "effect":"lower speed"}
@@ -23,4 +23,3 @@ dragon_breath = {"name": "Dragon breath", "damage":60, "accuracy":100, "type":"d
 scratch = {"name": "Scratch", "damage":40, "accuracy":100, "type":"normal", "inflict damage":True, "effect":""}
 poison_powder = {"name": "Poison powder", "damage":0, "accuracy":75, "type":"poison", "inflict damage":False, "effect":"inflict poison"}
 sing = {"name": "Sing", "damage":0, "accuracy":55, "type":"normal", "inflict damage":False, "effect":"inflict sleep"}
-

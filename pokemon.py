@@ -31,7 +31,7 @@ class Wild_Area():
 #=================================================================================================#
 
 class Pokemon():
-    def __init__(self, name, level, type, max_health, current_health, attack, defence, speed, knocked_out, xp, move1, move2, move3, move4, poisoned, sleeping, paralyzed, burned):
+    def __init__(self, name, level, type, max_health, current_health, attack, defence, speed, knocked_out, xp, move1, move2, move3, move4, poisoned, sleeping, paralyzed, burned, counter):
         self.name = name
         self.level = level
         self.type = type
@@ -50,6 +50,7 @@ class Pokemon():
         self.sleeping = sleeping
         self.paralyzed = paralyzed
         self.burned = burned
+        self.counter = counter
 
     def __repr__(self):
         return self.name
@@ -182,86 +183,134 @@ class Pokemon():
         if self.your_pokemon.speed < self.opponent_pokemon.speed:
             Pokemon.lose_health(self)
 
-        if random.randint(1, 100) <= self.chosen_move["accuracy"]:
+        if self.your_pokemon.paralyzed is True and random.randint(1, 100) <= 50:
 
-            if self.chosen_move["inflict damage"] is True:
+            input("""
+        Your {} is paralyzed and unable to move.""".format(self.your_pokemon.name))
 
-                if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
+        sleep_counter = random.randint(2,3)
+        if self.your_pokemon.sleeping is True and self.your_pokemon.counter >= sleep_counter:
+            
+            input("""
+        Your {} woke up!""".format(self.your_pokemon.name))
+            self.your_pokemon.counter = 0
+            self.your_pokemon.sleeping = False
+            
+        if self.your_pokemon.sleeping is True and self.your_pokemon.counter < sleep_counter:
 
-                    input("""
-        Your {} used {} on {} and has inflicted {} HP, it's super effective! Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
+            input("""
+        Your {} is still sleeping.""".format(self.your_pokemon.name))
+            self.your_pokemon.counter += 1
 
-                elif self.opponent_pokemon.current_health > 0:
-
-                    input("""
-        Your {} used {} on {} and has inflicted {} HP. Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
-
-                elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
-
-                    input("""
-        Your {} used {} on {} and has inflicted {} HP, it's not very effective... Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
-
-                elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for > 1:
-
-                    input("""
-        Your {} has attacked {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
-
-                    self.opponent_pokemon.knocked_out = True
-                    self.opponent_pokemon.current_health = 0
-                    Pokemon.xp(self)
-
-                elif self.opponent_pokemon.current_health <= 0:
-
-                    input("""
-        Your {} has attacked {}, inflicting {} HP. {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
-
-                    self.opponent_pokemon.knocked_out = True
-                    self.opponent_pokemon.current_health = 0
-                    Pokemon.xp(self)
-
-                elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for < 1:
-
-                    input("""
-        Your {} has attacked {}, inflicting {} HP, it's not very effective... {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
-
-                    self.opponent_pokemon.knocked_out = True
-                    self.opponent_pokemon.current_health = 0
-                    Pokemon.xp(self)
-
-            elif "lower" in self.chosen_move["effect"]:
-
-                input("""
-        Your {} used {} and has lowered {}'s {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, message ))
-
-            elif "increase" in self.chosen_move["effect"]:
-
-                input("""
-        Your {} used {} and has increased its {}.""".format(self.your_pokemon.name, self.chosen_move["name"], message))
-
-            elif "poison" in self.chosen_move["effect"]:
-
-                if self.opponent_pokemon.poisoned is True:
-
-                    input("""
-        Your {} used {} but the move failed as {} is already Poisoned.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
-
-                else: 
-                    self.opponent_pokemon.poisoned = True
-
-                    input("""
-        Your {} used {} and has poisoned {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
-
-        else:
+        elif random.randint(1, 99) >= self.chosen_move["accuracy"]:
 
             input("""
         Your {} used {} but failed to land a hit.""".format(self.your_pokemon.name, self.chosen_move["name"]))
 
-        if "burn" in self.chosen_move["effect"] and random.randint(1,100) >= 90 and self.opponent_pokemon.burned is False:
-            self.opponent_pokemon.burned = True
-            
-            input("""
+        elif self.chosen_move["inflict damage"] is True:
+
+            if self.opponent_pokemon.current_health > 0 and self.effectiveness_for > 1:
+
+                input("""
+        Your {} used {} on {} and has inflicted {} HP, it's super effective! Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
+
+            elif self.opponent_pokemon.current_health > 0:
+
+                input("""
+        Your {} used {} on {} and has inflicted {} HP. Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
+
+            elif self.opponent_pokemon.current_health > 0 and self.effectiveness_for < 1:
+
+                input("""
+        Your {} used {} on {} and has inflicted {} HP, it's not very effective... Its current HP is now {}""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, int(damage_dealt), int(self.opponent_pokemon.current_health)))
+
+            elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for > 1:
+
+                input("""
+        Your {} has attacked {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
+
+                self.opponent_pokemon.knocked_out = True
+                self.opponent_pokemon.current_health = 0
+                Pokemon.xp(self)
+
+            elif self.opponent_pokemon.current_health <= 0:
+
+                input("""
+        Your {} has attacked {}, inflicting {} HP. {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
+
+                self.opponent_pokemon.knocked_out = True
+                self.opponent_pokemon.current_health = 0
+                Pokemon.xp(self)
+
+            elif self.opponent_pokemon.current_health <= 0 and self.effectiveness_for < 1:
+
+                input("""
+        Your {} has attacked {}, inflicting {} HP, it's not very effective... {} has fainted.""".format(self.your_pokemon.name, self.opponent_pokemon.name, int(damage_dealt), self.opponent_pokemon.name))
+
+                self.opponent_pokemon.knocked_out = True
+                self.opponent_pokemon.current_health = 0
+                Pokemon.xp(self)
+
+            if "burn" in self.chosen_move["effect"] and random.randint(1,100) >= 85 and self.opponent_pokemon.burned is False:
+                self.opponent_pokemon.burned = True
+                
+                input("""
         {} has been inflicted with a burn.""".format(self.opponent_pokemon.name))
 
+            if "paralysis" in self.chosen_move["effect"] and random.randint(1,100) >=85 and self.opponent_pokemon.paralyzed is False:
+                self.opponent_pokemon.paralyzed = True
+            
+                input("""
+        {} has been paralyzed.""".format(self.opponent_pokemon.name))
+
+        elif "lower" in self.chosen_move["effect"]:
+
+            input("""
+        Your {} used {} and has lowered {}'s {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name, message ))
+
+        elif "increase" in self.chosen_move["effect"]:
+
+            input("""
+        Your {} used {} and has increased its {}.""".format(self.your_pokemon.name, self.chosen_move["name"], message))
+
+        elif "poison" in self.chosen_move["effect"]:
+
+            if self.opponent_pokemon.poisoned is True:
+
+                input("""
+        Your {} used {} but the move failed as {} is already poisoned.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
+
+            else: 
+                self.opponent_pokemon.poisoned = True
+
+                input("""
+        Your {} used {} and has poisoned {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
+
+        elif "paralysis" in self.chosen_move["effect"]:
+
+            if self.opponent_pokemon.paralyzed is True:
+
+                input("""
+        Your {} used {} but the move failed as {} is already paralyzed.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
+
+            else: 
+                self.opponent_pokemon.paralyzed = True 
+
+                input("""
+        Your {} used {} and has paralyzed {}.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
+
+        elif "sleep" in self.chosen_move["effect"]:
+
+            if self.opponent_pokemon.sleeping is True:
+
+                input("""
+        Your {} used {} but the move failed as {} is already sleeping.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
+
+            else: 
+                self.opponent_pokemon.sleeping = True 
+
+                input("""
+        Your {} used {} and has made {} doze off to sleep.""".format(self.your_pokemon.name, self.chosen_move["name"], self.opponent_pokemon.name))
 
 #=================================================================================================#
 #                                         GET ATTACKED                                            #
@@ -325,7 +374,31 @@ class Pokemon():
         elif self.opponent_move["effect"] == "inflict paralysis":
             pass 
 
-        if self.opponent_move["inflict damage"] is True:
+        if self.opponent_pokemon.paralyzed is True and random.randint(1, 100) <= 50:
+    
+            input("""
+        {} is paralyzed and unable to move.""".format(self.opponent_pokemon.name))
+
+        sleep_counter2 = random.randint(2,3)
+        if self.opponent_pokemon.sleeping is True and self.opponent_pokemon.counter >= sleep_counter2:
+            
+            input("""
+        Your {} woke up!""".format(self.opponent_pokemon.name))
+            self.opponent_pokemon.counter = 0
+            self.opponent_pokemon.sleeping = False
+            
+        if self.opponent_pokemon.sleeping is True and self.opponent_pokemon.counter < sleep_counter2:
+
+            input("""
+        Your {} is still sleeping.""".format(self.opponent_pokemon.name))
+            self.opponent_pokemon.counter += 1
+
+        elif random.randint(1, 99) >= self.opponent_move["accuracy"]: 
+            
+            input("""
+        {} used {} but failed to land a hit.""".format(self.opponent_pokemon.name, self.opponent_move["name"]))
+
+        elif self.opponent_move["inflict damage"] is True:
             if self.your_pokemon.current_health > 0 and self.effectiveness_against > 1:
                 input("""
         {} used {} on {}, inflicting {} HP, it's super effective! Its current HP is now {}""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), int(self.your_pokemon.current_health)))
@@ -344,9 +417,13 @@ class Pokemon():
                 input("""
         {} used {} on {}, inflicting {} HP, it's super effective! {} has fainted.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for pokemon in self.Pokemon_team:
-                    if Pokemon.knocked_out is False:
-                        trainer.switch_pokemon(self)
+                for i in range(len(list(self.Pokemon_team))):
+                    if Pokemon_team[i].knocked_out is False:
+                        input("""
+        Please switch out your next pokemon""")
+                        Trainer.switch_pokemon(self)
+                return input("""
+        Game over, all your Pokemon have fainted""")
 
             elif self.your_pokemon.current_health <= 0 and self.effectiveness_against < 1:
                 self.your_pokemon.knocked_out = True
@@ -354,9 +431,13 @@ class Pokemon():
                 input("""
         {} has attacked your {}, inflicting {} HP, it's not very effective... {} has fainted.""".format(self.opponent_pokemon.name, self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for pokemon in self.POKEMON_TEAM:
-                    if Pokemon.knocked_out is False:
-                        trainer.switch_pokemon(self)
+                for i in range(len(list(self.Pokemon_team))):
+                    if Pokemon_team[i].knocked_out is False:
+                        input("""
+        Please switch out your next pokemon""")
+                        Trainer.switch_pokemon(self)
+                return input("""
+        Game over, all your Pokemon have fainted""")
 
             elif self.your_pokemon.current_health <= 0:
                 self.your_pokemon.knocked_out = True
@@ -364,15 +445,26 @@ class Pokemon():
                 input("""
         {} has attacked your {}, inflicting {} HP. {} has fainted.""".format(self.opponent_pokemon.name, self.your_pokemon.name, int(damage_received), self.your_pokemon.name))
 
-                for pokemon in self.POKEMON_TEAM:
-                    if Pokemon.knocked_out is False:
+                for i in range(len(list(self.Pokemon_team))):
+                    if Pokemon_team[i].knocked_out is False:
                         input("""
         Please switch out your next pokemon""")
-                        trainer.switch_pokemon(self)
+                        Trainer.switch_pokemon(self)
+                return input("""
+        Game over, all your Pokemon have fainted""")
 
+            if "burn" in self.opponent_move["effect"] and random.randint(1,100) >=85 and self.your_pokemon.burned is False:
+                self.your_pokemon.burned = True
+            
                 input("""
-        Game Over!""")
-                exit(0)
+        {} has been inflicted with a burn.""".format(self.your_pokemon.name))
+
+            if "paralysis" in self.opponent_move["effect"] and random.randint(1,100) >=85 and self.your_pokemon.paralyzed is False:
+                self.your_pokemon.paralyzed = True
+            
+                input("""
+        {} has been paralyzed.""".format(self.your_pokemon.name))
+
         elif "increase" in self.opponent_move["effect"]:
             input("""
         {} used {} and has increased its {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], message))
@@ -394,16 +486,31 @@ class Pokemon():
                 input("""
         {} used {} and has poisoned {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
 
-        else:
+        elif "paralysis" in self.opponent_move["effect"]:
 
-            input("""
-        {} used {} but failed to land a hit.""".format(self.opponent_pokemon.name, self.opponent_move["name"]))
+            if self.your_pokemon.paralyzed is True:
 
-        if "burn" in self.opponent_move["effect"] and random.randint(1,100) >=90 and self.your_pokemon.burned is False:
-            self.your_pokemon.burned = True
-            
-            input("""
-        {} has been inflicted with a burn.""".format(self.your_pokemon.name))
+                input("""
+        {} used {} but the move failed as {} is already paralyzed.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
+
+            else: 
+                self.your_pokemon.paralyzed = True 
+
+                input("""
+        {} used {} and has paralyzed {}.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
+
+        elif "sleep" in self.opponent_move["effect"]:
+
+            if self.your_pokemon.sleeping is True:
+
+                input("""
+        {} used {} but the move failed as {} is already sleeping.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
+
+            else: 
+                self.your_pokemon.sleeping = True 
+
+                input("""
+        {} used {} and has made {} doze off to sleep.""".format(self.opponent_pokemon.name, self.opponent_move["name"], self.your_pokemon.name))
 
 
 #=================================================================================================#
@@ -647,7 +754,6 @@ class Pokemon():
             input("""
         {} has been hurt by its burn. Its HP has decreased by {} to {}""".format(self.your_pokemon.name, int(damage), int(self.your_pokemon.current_health)))
 
-
 #=================================================================================================#
 #                                         TRAINER CLASS                                           #
 #=================================================================================================#
@@ -742,9 +848,9 @@ class Trainer():
 #=================================================================================================#
 
     def starter(self):
-  
+
         os.system('clear')
-        choice = 0
+        choice = 0            
 
         while choice not in ("1", "2", "3"):
             os.system('clear')
@@ -779,7 +885,8 @@ class Trainer():
             input("""
         """+ str(self.rival_name) + """ has chosen """ + str(self.opponent_pokemon.name) + """, the """ +  str(self.opponent_pokemon.type) + """ type Pokemon.""")
 
-            Pokemon_team.append(self.your_pokemon)
+            self.Pokemon_team.append(self.your_pokemon)
+            self.Pokemon_team.append(Pokemon(**jigglypuff))
 
             input("""
         Please accept these little gifts to help you embark on your adventure...
