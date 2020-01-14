@@ -1058,29 +1058,135 @@ class Trainer():
 #=================================================================================================#
 
     def use_potion(self):
+        
+        os.system('clear')
+        for i in range(len(list(self.Pokemon_team))):
+            print("""
+        {} - {} | {}/{}HP | Level {}""".format(i+1, self.Pokemon_team[i].name, int(self.Pokemon_team[i].current_health), int(self.Pokemon_team[i].max_health), self.Pokemon_team[i].level))
+        
+        print("""
+        7 - Exit""")
+        
+        choice = 0
+        while choice not in ("1", "2", "3", "4", "5", "6", "7"):
 
-        self.items["potion"] = self.items["potion"] - 1
-        self.your_pokemon.current_health = self.your_pokemon.current_health + 30
-        if int(self.your_pokemon.current_health) > self.your_pokemon.max_health:
-            self.your_pokemon.current_health = self.your_pokemon.max_health
-        input("""
-        You have used a potion on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, int(self.your_pokemon.current_health)))
+            try: 
+                choice = input("""
+        Select the pokemon you want to use a potion on: """)
+    
+                if str(choice) == "7":
+                    Trainer.access_bag(self)
+                elif str(choice) == choice:
+                    if self.Pokemon_team[int(choice) - 1].current_health == self.Pokemon_team[int(choice) - 1].max_health:
 
-        Pokemon.lose_health(self)
-        Pokemon.poisoned(self)
-        Pokemon.burned(self)
-        Pokemon.next_action(self)
+                        input("""
+        It will have no effect as {} is already at full health.""".format(self.Pokemon_team[int(choice) - 1]))
+            
+                        Trainer.use_potion(self)
+                    else:
+                        self.items["potion"] = self.items["potion"] - 1
+                        self.Pokemon_team[int(choice) - 1].current_health = self.Pokemon_team[int(choice) - 1].current_health + 30
+                        if int(self.Pokemon_team[int(choice) - 1].current_health) > self.Pokemon_team[int(choice) - 1].max_health:
+                            self.Pokemon_team[int(choice) - 1].current_health = self.Pokemon_team[int(choice) - 1].max_health
+
+                        input("""
+        You have used a potion on {}, it's current HP has increased to {}""".format(self.Pokemon_team[int(choice) - 1], int(self.your_pokemon.current_health)))
+
+                        Pokemon.lose_health(self)
+                        Pokemon.poisoned(self)
+                        Pokemon.burned(self)
+                        Pokemon.next_action(self)
+
+            except IndexError:
+                Trainer.use_potion(self)
+            except ValueError:
+                Trainer.use_potion(self)
 
     def use_revive(self):
-        self.items["revive"] = self.items["revive"] - 1
-        self.your_pokemon.current_health = self.your_pokemon.max_health / 2
-        input("""
-        You have used a revive on your {}, it's current HP has increased to {}""".format(self.your_pokemon.name, int(self.your_pokemon.current_health)))
 
-        Pokemon.lose_health(self)
-        Pokemon.poisoned(self)
-        Pokemon.burned(self)
-        Pokemon.next_action(self)
+        os.system('clear')
+        for i in range(len(list(self.Pokemon_team))):
+            print("""
+        {} - {} | {}/{}HP | Level {}""".format(i+1, self.Pokemon_team[i].name, int(self.Pokemon_team[i].current_health), int(self.Pokemon_team[i].max_health), self.Pokemon_team[i].level))
+        
+        print("""
+        7 - Exit""")
+        
+        choice = 0
+        while choice not in ("1", "2", "3", "4", "5", "6", "7"):
+
+            try: 
+                choice = input("""
+        Select the pokemon you want to revive: """)
+    
+                if str(choice) == "7":
+                    Trainer.access_bag(self)
+                elif str(choice) == choice:
+                    if self.Pokemon_team[int(choice) - 1].knocked_out is False:
+
+                        input("""
+        It will have no effect as {} has not fainted.""".format(self.Pokemon_team[int(choice) - 1]))
+            
+                        Trainer.use_revive(self)
+                    else:
+                        self.items["revive"] = self.items["revive"] - 1
+                        self.Pokemon_team[int(choice) - 1].current_health = self.Pokemon_team[int(choice) - 1].max_health / 2
+
+                        input("""
+        You have revived {} and have restored it's HP to {}""".format(self.Pokemon_team[int(choice) - 1], int(self.your_pokemon.current_health / 2)))
+
+                        Pokemon.lose_health(self)
+                        Pokemon.poisoned(self)
+                        Pokemon.burned(self)
+                        Pokemon.next_action(self)
+
+            except IndexError:
+                Trainer.use_revive(self)
+            except ValueError:
+                Trainer.use_revive(self)
+
+    def use_antidote(self):
+
+        os.system('clear')
+        for i in range(len(list(self.Pokemon_team))):
+            print("""
+        {} - {} | {}/{}HP | Level {}""".format(i+1, self.Pokemon_team[i].name, int(self.Pokemon_team[i].current_health), int(self.Pokemon_team[i].max_health), self.Pokemon_team[i].level))
+        
+        print("""
+        7 - Exit""")
+        
+        choice = 0
+        while choice not in ("1", "2", "3", "4", "5", "6", "7"):
+
+            try: 
+                choice = input("""
+        Select the pokemon you want to use an antidote on: """)
+    
+                if str(choice) == "7":
+                    Trainer.access_bag(self)
+                elif str(choice) == choice:
+                    if self.Pokemon_team[int(choice) - 1].poisoned is False:
+
+                        input("""
+        It will have no effect as {} is not poisoned.""".format(self.Pokemon_team[int(choice) - 1]))
+            
+                        Trainer.use_antidote(self)
+                    else:
+                        self.items["antidote"] = self.items["antidote"] - 1
+                        self.Pokemon_team[int(choice) - 1].poisoned = False
+
+                        input("""
+        {} is no longer poisoned!""".format(self.Pokemon_team[int(choice) - 1]))
+
+                        Pokemon.lose_health(self)
+                        Pokemon.poisoned(self)
+                        Pokemon.burned(self)
+                        Pokemon.next_action(self)
+                    
+            except IndexError:
+                Trainer.use_revive(self)
+            except ValueError:
+                Trainer.use_revive(self)
 
     def use_poke_ball(self):
         self.items["poke ball"] = self.items["poke ball"] - 1
@@ -1091,19 +1197,6 @@ class Trainer():
         Pokemon.poisoned(self)
         Pokemon.burned(self)
         Pokemon.next_action(self)
-
-    def use_antidote(self):
-        #if self.your_pokemon.poisoned is True:
-        self.items["antidote"] = self.items["antidote"] - 1
-        self.your_pokemon.poisoned = False
-        input("""
-        You have used an antidote on """ + str(self.your_pokemon) + "!, it is no longer poisoned.""")
-        
-        Pokemon.lose_health(self)
-        Pokemon.poisoned(self)
-        Pokemon.burned(self)
-        Pokemon.next_action(self)
-
 
 #=================================================================================================#
 #                                            SWITCH POKEMON                                       #
