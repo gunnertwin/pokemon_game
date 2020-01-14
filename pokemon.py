@@ -976,7 +976,7 @@ class Trainer():
         """+ str(self.rival_name) + """ has chosen """ + str(self.opponent_pokemon.name) + """, the """ +  str(self.opponent_pokemon.type) + """ type Pokemon.""")
 
             self.Pokemon_team.append(self.your_pokemon)
-            self.Pokemon_team.append(Pokemon(**jigglypuff))
+            self.Pokemon_team.append(Pokemon(**pidgey))
 
             input("""
         Please accept these little gifts to help you embark on your adventure...
@@ -1121,89 +1121,30 @@ class Trainer():
 
             choice = input("""
         Select the pokemon you want to switch to: """)
+            
+            if str(choice) == choice:
+                if self.Pokemon_team[int(choice) - 1].knocked_out is True:
 
-            if str(choice) == "1":
-                if self.Pokemon_team[0].knocked_out is True:
                     input("""
         You can not battle with a fainted Pokemon.""")
+        
                     Trainer.switch_pokemon(self)
-                else:
+                elif str(choice) == "1":
                     Pokemon.next_action(self)
-
-            elif str(choice) == "2":
-                if self.Pokemon_team[1].knocked_out is True:
-                    input("""
-        You can not battle with a fainted Pokemon.""")
-                    Trainer.switch_pokemon(self)
-
                 else:
-                    self.your_pokemon = self.Pokemon_team[1]
-                    self.Pokemon_team.pop(1)
+                    self.your_pokemon = self.Pokemon_team[int(choice) - 1]
+                    self.Pokemon_team.pop(int(choice) - 1)
                     self.Pokemon_team.insert(0, self.your_pokemon)
+
                     input("""
         GO """ + str(self.your_pokemon) + """!""")
-                    Pokemon.lose_health(self)
-                    Pokemon.next_action(self)
 
-            elif str(choice) == "3":
-                if self.Pokemon_team[2].knocked_out is True:
-                    input("""
-        You can not battle with a fainted Pokemon.""")
-                    Trainer.switch_pokemon(self)
+                    if self.Pokemon_team[int(choice) - 1].knocked_out is True:
+                        Pokemon.next_action(self)        
+                    else:
+                        Pokemon.lose_health(self)
+                        Pokemon.next_action(self)
 
-                else:
-                    self.your_pokemon = self.Pokemon_team[2]
-                    self.Pokemon_team.pop(2)
-                    self.Pokemon_team.insert(0, self.your_pokemon)
-                    input("""
-        GO """ + str(self.your_pokemon) + """!""")
-                    Pokemon.lose_health(self)
-                    Pokemon.next_action(self)
-
-            elif str(choice) == "4":
-                if self.Pokemon_team[3].knocked_out is True:
-                    input("""
-        You can not battle with a fainted Pokemon.""")
-                    Trainer.switch_pokemon(self)
-
-                else:
-                    self.your_pokemon = self.Pokemon_team[3]
-                    self.Pokemon_team.pop(3)
-                    self.Pokemon_team.insert(0, self.your_pokemon)
-                    input("""
-        GO """ + str(self.your_pokemon) + """!""")
-                    Pokemon.lose_health(self)
-                    Pokemon.next_action(self)
-
-            elif str(choice) == "5":
-                if self.Pokemon_team[4].knocked_out is True:
-                    input("""
-        You can not battle with a fainted Pokemon.""")
-                    Trainer.switch_pokemon(self)
-
-                else:
-                    self.your_pokemon = self.Pokemon_team[4]
-                    self.Pokemon_team.pop(4)
-                    self.Pokemon_team.insert(0, self.your_pokemon)
-                    input("""
-        GO """ + str(self.your_pokemon) + """!""")
-                    Pokemon.lose_health(self)
-                    Pokemon.next_action(self)
-
-            elif str(choice) == "6":
-                if self.Pokemon_team[5].knocked_out is True:
-                    input("""
-        You can not battle with a fainted Pokemon.""")
-                    Trainer.switch_pokemon(self)
-
-                else:
-                    self.your_pokemon = self.Pokemon_team[5]
-                    self.Pokemon_team.pop(5)
-                    self.Pokemon_team.insert(0, self.your_pokemon)
-                    input("""
-        GO """ + str(self.your_pokemon) + """!""")
-                    Pokemon.lose_health(self)
-                    Pokemon.next_action(self)
 
 #=================================================================================================#
 #                                            STORY CLASS                                          #
@@ -1221,7 +1162,7 @@ ITEMS = {"potion": 0, "revive": 0, "poke ball": 0, "antidote": 5}
 Pokemon_team = []
 
 STORY = STORY(POKEMON_DATABASE)
-POKEMON_TRAINER = Trainer("Daniel", "Daniel", Pokemon_team, ITEMS, 1000, "", "")
+POKEMON_TRAINER = Trainer("Daniel", "Liam", Pokemon_team, ITEMS, 1000, "", "")
 NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
 
 #Trainer.NEW_TRAINER(POKEMON_TRAINER)
