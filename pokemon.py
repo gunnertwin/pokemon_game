@@ -1184,9 +1184,9 @@ class Trainer():
                         Pokemon.next_action(self)
                     
             except IndexError:
-                Trainer.use_revive(self)
+                Trainer.use_antidote(self)
             except ValueError:
-                Trainer.use_revive(self)
+                Trainer.use_antidote(self)
 
     def use_poke_ball(self):
         self.items["poke ball"] = self.items["poke ball"] - 1
