@@ -33,6 +33,62 @@ class Wild_Area():
 
 
 #=================================================================================================#
+#                                           POKEMART                                              #
+#=================================================================================================#
+
+class pokemart():
+
+    
+
+    def __init__(self, items, **kwargs):
+        self.items = items
+        
+        os.system('clear')
+        input("""
+        Welcome to the PokeMart! We sell potions, revives, pokeballs and many other items. """)
+
+        choice = 0
+        while choice not in ("1", "2", "3"):
+            os.system('clear')
+            choice = input("""
+
+        Money: """ + str(self.items.money) + """ 
+
+        1 - Buy
+        2 - Sell
+        3 - Exit
+
+        What do you like to do: """)
+
+        if str(choice) == "1":
+            choice = 0
+            os.system('clear')
+
+            choice = input("""
+
+        Funds: {money}
+
+        1 - Potion:         ${potioncost}
+        2 - Revive:         ${revivecost}
+        3 - Antidote:       ${antidotecost}
+        4 - Burn heal:      ${burnhealcost}
+        5 - Awakening:      ${awakeningcost}
+        6 - Paralyze heal:  ${paralyzehealcost}
+        7 - Poke ball:      ${pokeballcost}
+        3 - Exit
+
+        What do you like to do: """.format(
+        money=self.items.money,
+        potioncost=kwargs.get("potion"),
+        revivecost=kwargs.get("revive"),
+        antidotecost=kwargs.get("antidote"),
+        burnhealcost=kwargs.get("burn heal"),
+        awakeningcost=kwargs.get("awakening"),
+        paralyzehealcost=kwargs.get("paralyze heal"),
+        pokeballcost=kwargs.get("poke ball"),
+        ))
+
+#=================================================================================================#
 #                                       POKEMON CLASS                                             #
 #=================================================================================================#
 
@@ -106,7 +162,7 @@ class Pokemon():
         elif str(choice) == "4":
             input("""
         You have successfully ran away!""")
-            Wild_Area.wild_pokemon(self)
+            pokemart(self)
 
         else:
             print("""
@@ -1251,11 +1307,14 @@ class STORY():
 
 POKEMON_DATABASE = [bulbasaur, charmander, squirtle, rattata, pikachu, caterpie, ekans, jigglypuff, pidgey]
 
+
 ITEMS = {"potion": 0, "revive": 0, "poke ball": 0, "antidote": 5}
 Pokemon_team = []
 
-STORY = STORY(POKEMON_DATABASE)
+pokemart_items = {"potion": 300, "revive": 1500, "antidote": 100, "burn heal": 250, "awakening": 250, "paralyze heal": 200, "poke ball": 200}
 POKEMON_TRAINER = Trainer("Daniel", "Liam", Pokemon_team, ITEMS, 1000, "", "")
+pokemart(POKEMON_TRAINER,**pokemart_items)
 NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
+STORY = STORY(POKEMON_DATABASE)
 
 #Trainer.NEW_TRAINER(POKEMON_TRAINER)
