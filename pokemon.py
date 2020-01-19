@@ -38,8 +38,6 @@ class Wild_Area():
 
 class pokemart():
 
-    
-
     def __init__(self, items, **kwargs):
         self.items = items
         
@@ -62,31 +60,23 @@ class pokemart():
 
         if str(choice) == "1":
             choice = 0
-            os.system('clear')
+            
+            while choice not in ("1", "2"):   
+                os.system('clear')
+                count = 1 
+                print(f"\n\tFunds: {self.items.money}\n")
+                for item, value in kwargs.items():
+                    print(f"\t{count} - {item.ljust(15)}: ${value}")
+                    count += 1
+            
+                choice = input("\n\tWhat would you like to purchase?")
+ 
+        if str(choice) == "1":
+            choice = 0
+            while choice not in ("y", "n"):
+                os.system('clear')
+                choice = input("\n\tHow many potions would you like to buy? """)
 
-            choice = input("""
-
-        Funds: {money}
-
-        1 - Potion:         ${potioncost}
-        2 - Revive:         ${revivecost}
-        3 - Antidote:       ${antidotecost}
-        4 - Burn heal:      ${burnhealcost}
-        5 - Awakening:      ${awakeningcost}
-        6 - Paralyze heal:  ${paralyzehealcost}
-        7 - Poke ball:      ${pokeballcost}
-        3 - Exit
-
-        What do you like to do: """.format(
-        money=self.items.money,
-        potioncost=kwargs.get("potion"),
-        revivecost=kwargs.get("revive"),
-        antidotecost=kwargs.get("antidote"),
-        burnhealcost=kwargs.get("burn heal"),
-        awakeningcost=kwargs.get("awakening"),
-        paralyzehealcost=kwargs.get("paralyze heal"),
-        pokeballcost=kwargs.get("poke ball"),
-        ))
 
 #=================================================================================================#
 #                                       POKEMON CLASS                                             #
