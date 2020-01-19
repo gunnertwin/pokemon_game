@@ -42,21 +42,12 @@ class pokemart():
         self.items = items
         
         os.system('clear')
-        input("""
-        Welcome to the PokeMart! We sell potions, revives, pokeballs and many other items. """)
+        input("\n\tWelcome to the PokeMart! We sell potions, revives, pokeballs and many other items.")
 
         choice = 0
         while choice not in ("1", "2", "3"):
             os.system('clear')
-            choice = input("""
-
-        Money: """ + str(self.items.money) + """ 
-
-        1 - Buy
-        2 - Sell
-        3 - Exit
-
-        What do you like to do: """)
+            choice = input(f"\n\tMoney: {self.items.money} \n\n\t1 - Buy\n\t2 - Sell\n\t3 - Exit\n\n\tWhat would you like to do: ")
 
         if str(choice) == "1":
             choice = 0
@@ -66,7 +57,7 @@ class pokemart():
                 count = 1 
                 print(f"\n\tFunds: {self.items.money}\n")
                 for item, value in kwargs.items():
-                    print(f"\t{count} - {item.ljust(15)}: ${value}")
+                    print(f"\t{count} - {item.ljust(15).title()}: ${value}")
                     count += 1
             
                 choice = input("\n\tWhat would you like to purchase?")
