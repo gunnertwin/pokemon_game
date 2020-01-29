@@ -2,6 +2,7 @@ import os
 import random
 from pokemon_db import *
 from moves import *
+import pyinputplus as pyip
 
 #=================================================================================================#
 #                                       WILD AREA CLASS                                           #
@@ -44,23 +45,21 @@ class pokemart():
         os.system('clear')
         input("\n\tWelcome to the PokeMart! We sell potions, revives, pokeballs and many other items.")
 
-        choice = 0
-        while choice not in ("1", "2", "3"):
+        while True:
             os.system('clear')
-            choice = input(f"\n\tMoney: {self.items.money} \n\n\t1 - Buy\n\t2 - Sell\n\t3 - Exit\n\n\tWhat would you like to do: ")
+            buy_or_sell = pyip.inputMenu(['Buy', 'Sell', 'Exit'], numbered=True)
 
-        if str(choice) == "1":
-            choice = 0
-            
-            while choice not in ("1", "2"):   
+            if buy_or_sell == "Buy":    
                 os.system('clear')
                 count = 1 
-                print(f"\n\tFunds: {self.items.money}\n")
+                print(f"\n\tFunds: ${self.items.money}\n")
+                item_list = []
                 for item, value in kwargs.items():
+                    item_list.append(item.title())
                     print(f"\t{count} - {item.ljust(15).title()}: ${value}")
                     count += 1
-            
-                choice = input("\n\tWhat would you like to purchase?")
+                print("")
+                item_to_buy = pyip.inputMenu(item_list, numbered=True)
  
         if str(choice) == "1":
             choice = 0
@@ -1293,7 +1292,7 @@ ITEMS = {"potion": 0, "revive": 0, "poke ball": 0, "antidote": 5}
 Pokemon_team = []
 
 pokemart_items = {"potion": 300, "revive": 1500, "antidote": 100, "burn heal": 250, "awakening": 250, "paralyze heal": 200, "poke ball": 200}
-POKEMON_TRAINER = Trainer("Daniel", "Liam", Pokemon_team, ITEMS, 1000, "", "")
+POKEMON_TRAINER = Trainer("Daniel", "Liam", Pokemon_team, ITEMS, 10000, "", "")
 pokemart(POKEMON_TRAINER,**pokemart_items)
 NEW_TRAINER = Trainer.starter(POKEMON_TRAINER)
 STORY = STORY(POKEMON_DATABASE)
